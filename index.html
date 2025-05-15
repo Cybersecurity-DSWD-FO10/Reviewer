@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Civil Service Quiz - Philippines</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f0f4f8; /* Light blue-gray background */
+            display: flex; /* Enable Flexbox */
+            justify-content: center; /* Center horizontally */
+            align-items: center; /* Center vertically */
+            min-height: 100vh; /* Ensure body takes full viewport height */
+            margin: 0; /* Remove default body margin */
+            padding: 1rem; /* Add some padding for small screens */
+            box-sizing: border-box; /* Include padding in element's total width and height */
+        }
+        .quiz-container {
+            max-width: 800px;
+            width: 100%; /* Ensure it takes full width up to max-width */
+            padding: 2rem;
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        .btn-primary {
+            background-color: #3b82f6; /* Blue-500 */
+            color: white;
+        }
+        .btn-primary:hover {
+            background-color: #2563eb; /* Blue-600 */
+        }
+        .btn-secondary {
+            background-color: #6b7280; /* Gray-500 */
+            color: white;
+        }
+        .btn-secondary:hover {
+            background-color: #4b5563; /* Gray-600 */
+        }
+        .input-field {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #d1d5db; /* Gray-300 */
+            border-radius: 8px;
+            margin-bottom: 1rem;
+        }
+        .input-field:focus {
+            outline: none;
+            border-color: #3b82f6; /* Blue-500 */
+            box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.3);
+        }
+        .question-card {
+            background-color: #f9fafb; /* Gray-50 */
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin-bottom: 1.5rem;
+            border: 1px solid #e5e7eb; /* Gray-200 */
+        }
+        .option-label {
+            display: block;
+            padding: 0.75rem;
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+            margin-bottom: 0.5rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .option-label:hover {
+            background-color: #e5e7eb; /* Gray-200 */
+        }
+        .option-label input[type="radio"] {
+            margin-right: 0.5rem;
+        }
+        .selected-option {
+            background-color: #bfdbfe; /* Blue-200 */
+            border-color: #3b82f6; /* Blue-500 */
+        }
+        .correct-answer {
+            background-color: #d1fae5; /* Green-100 */
+            border-left: 4px solid #10b981; /* Green-500 */
+        }
+        .incorrect-answer {
+            background-color: #fee2e2; /* Red-100 */
+            border-left: 4px solid #ef4444; /* Red-500 */
+        }
+        /* Responsive adjustments */
+        @media (max-width: 640px) {
+            .quiz-container {
+                margin: 1rem;
+                padding: 1.5rem;
+            }
+            .btn {
+                width: 100%;
+                margin-bottom: 0.5rem;
+            }
+            .flex-col-reverse.sm\:flex-row {
+                flex-direction: column-reverse;
+            }
+        }
+    </style>
+</head>
+<body class="text-gray-800">
+
+    <div class="quiz-container">
+        <header class="text-center mb-8">
+            <h1 class="text-3xl sm:text-4xl font-bold text-blue-600">Civil Service Exam Reviewer</h1>
+            <p class="text-gray-600 mt-2">Professional Level - Philippines</p>
+        </header>
+
+        <section id="userInfoSection">
+            <h2 class="text-2xl font-semibold mb-6 text-gray-700">Welcome, Reviewee!</h2>
+            <form id="userInfoForm">
+                <div class="mb-4">
+                    <label for="userName" class="block text-sm font-medium text-gray-700 mb-1">Full Name:</label>
+                    <input type="text" id="userName" name="userName" class="input-field" required>
+                </div>
+                <div class="mb-6">
+                    <label for="userEmail" class="block text-sm font-medium text-gray-700 mb-1">Email Address:</label>
+                    <input type="email" id="userEmail" name="userEmail" class="input-field" required>
+                </div>
+                <button type="submit" class="btn btn-primary w-full">Start Review</button>
+            </form>
+        </section>
+
+        <section id="quizSetupSection" class="hidden">
+            <h2 class="text-2xl font-semibold mb-6 text-gray-700">Quiz Configuration</h2>
+            <div class="mb-4">
+                <label for="quizCategory" class="block text-sm font-medium text-gray-700 mb-1">Select Category:</label>
+                <select id="quizCategory" name="quizCategory" class="input-field">
+                    <option value="Verbal">Verbal Reasoning</option>
+                    <option value="Analytical">Analytical Ability</option>
+                    <option value="Numerical">Numerical Ability</option>
+                    <option value="General Information">General Information (Phils. Constitution, Peace & Human Rights, Environment)</option>
+                </select>
+            </div>
+            <div class="mb-6">
+                <label for="quizDifficulty" class="block text-sm font-medium text-gray-700 mb-1">Select Difficulty:</label>
+                <select id="quizDifficulty" name="quizDifficulty" class="input-field">
+                    <option value="Easy">Easy</option>
+                    <option value="Medium">Medium</option>
+                    <option value="Hard">Hard</option>
+                </select>
+            </div>
+            <button id="generateQuestionsButton" class="btn btn-primary w-full">Generate Questions</button>
+            <button id="backToUserInfoButton" class="btn btn-secondary w-full mt-2">Back</button>
+        </section>
+
+        <section id="loadingSection" class="hidden text-center py-10">
+            <div class="flex justify-center items-center mb-4">
+                <svg class="animate-spin -ml-1 mr-3 h-10 w-10 text-blue-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+            </div>
+            <p class="text-xl font-medium text-gray-700">Generating your questions...</p>
+            <p class="text-gray-500">This might take a moment. Please wait.</p>
+        </section>
+
+        <section id="questionnaireSection" class="hidden">
+            <h2 class="text-2xl font-semibold mb-2 text-gray-700">Quiz Time!</h2>
+            <p class="text-sm text-gray-500 mb-6">Category: <span id="displayCategory" class="font-semibold"></span> | Difficulty: <span id="displayDifficulty" class="font-semibold"></span></p>
+            <div id="questionsContainer">
+                </div>
+            <div class="mt-8 flex flex-col-reverse sm:flex-row justify-between items-center">
+                   <button id="cancelQuizButton" class="btn btn-secondary mt-4 sm:mt-0">Cancel Quiz</button>
+                   <button id="submitAnswersButton" class="btn btn-primary">Submit Answers</button>
+            </div>
+        </section>
+
+        <section id="resultsSection" class="hidden">
+            <h2 class="text-2xl font-semibold mb-4 text-gray-700">Quiz Results</h2>
+            <div class="bg-blue-50 p-6 rounded-lg shadow mb-6">
+                <p class="text-lg">Hello, <span id="resultUserName" class="font-bold text-blue-600"></span>!</p>
+                <p class="text-2xl">Your Score: <span id="score" class="font-bold text-green-600">0</span> / <span id="totalQuestions" class="font-bold">0</span></p>
+            </div>
+            <div id="reviewContainer" class="space-y-4">
+                </div>
+            <div class="mt-8 text-center space-y-2 sm:space-y-0 sm:space-x-2">
+                <button id="emailResultsButton" class="btn btn-primary inline-block">Email My Results</button>
+                <button id="tryAgainButton" class="btn btn-secondary inline-block">Try Another Quiz</button>
+            </div>
+        </section>
+
+        <footer class="text-center mt-12 text-sm text-gray-500">
+            <p>&copy; 2024 Civil Service Reviewer. For educational purposes only.</p>
+               <p class="mt-1">Question generation powered by Google Gemini.</p>
+        </footer>
+
+    </div>
+
+    <script>
+        // DOM Elements
+        const userInfoSection = document.getElementById('userInfoSection');
+        const quizSetupSection = document.getElementById('quizSetupSection');
+        const questionnaireSection = document.getElementById('questionnaireSection');
+        const loadingSection = document.getElementById('loadingSection');
+        const resultsSection = document.getElementById('resultsSection');
+
+        const userInfoForm = document.getElementById('userInfoForm');
+        const userNameInput = document.getElementById('userName');
+        const userEmailInput = document.getElementById('userEmail');
+
+        const quizCategorySelect = document.getElementById('quizCategory');
+        const quizDifficultySelect = document.getElementById('quizDifficulty');
+        const generateQuestionsButton = document.getElementById('generateQuestionsButton');
+        const backToUserInfoButton = document.getElementById('backToUserInfoButton');
+
+        const questionsContainer = document.getElementById('questionsContainer');
+        const submitAnswersButton = document.getElementById('submitAnswersButton');
+        const cancelQuizButton = document.getElementById('cancelQuizButton');
+
+        const displayCategory = document.getElementById('displayCategory');
+        const displayDifficulty = document.getElementById('displayDifficulty');
+
+        const scoreDisplay = document.getElementById('score');
+        const totalQuestionsDisplay = document.getElementById('totalQuestions');
+        const resultUserNameDisplay = document.getElementById('resultUserName');
+        const reviewContainer = document.getElementById('reviewContainer');
+        const emailResultsButton = document.getElementById('emailResultsButton');
+        const tryAgainButton = document.getElementById('tryAgainButton');
+
+        // App State
+        // IMPORTANT: Gemini API Key is now on the client-side.
+        // **This will be publicly visible if hosted on GitHub Pages.**
+        // **Expect CORS issues if the Gemini API does not allow direct client-side calls from your domain.**
+        const GEMINI_API_KEY = "AIzaSyB3v2tvjTsuT4IjN4yrHAx2kKXpaTDAvow"; // Replace with your actual key
+
+        // IMPORTANT: Replace this with YOUR DEPLOYED GOOGLE APPS SCRIPT WEB APP URL
+        // Go to your Apps Script project > Deploy > New deployment > Web app.
+        // Set "Execute as: Me" and "Who has access: Anyone". Copy the URL generated.
+        const APPS_SCRIPT_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbwUhnm2RIgjzH7fVuLXkOQIZC8aa7boSaxEuu6QtBMwed6QOLgwXi-25oOeUuHmpuY9AQ/exec";
+
+
+        let userName = '';
+        let userEmail = '';
+        let currentQuestions = [];
+        let userAnswers = [];
+        const NUM_QUESTIONS = 10; // Number of questions to generate
+
+
+        // --- Navigation ---
+        function showSection(section) {
+            [userInfoSection, quizSetupSection, questionnaireSection, loadingSection, resultsSection].forEach(s => s.classList.add('hidden'));
+            section.classList.remove('hidden');
+            window.scrollTo(0, 0); // Scroll to top
+        }
+
+        // --- User Info ---
+        userInfoForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            userName = userNameInput.value.trim();
+            userEmail = userEmailInput.value.trim();
+            if (userName && userEmail) {
+                showSection(quizSetupSection);
+            } else {
+                alert("Please fill in both your name and email.");
+            }
+        });
+
+        backToUserInfoButton.addEventListener('click', () => {
+            showSection(userInfoSection);
+        });
+
+
+        // --- Quiz Setup & Question Generation (Direct Gemini API call from client-side) ---
+        generateQuestionsButton.addEventListener('click', () => {
+            fetchQuestions();
+        });
+
+        async function fetchQuestions() {
+            const category = quizCategorySelect.value;
+            const difficulty = quizDifficultySelect.value;
+
+            showSection(loadingSection);
+
+            if (GEMINI_API_KEY === "YOUR_GEMINI_API_KEY_HERE" || GEMINI_API_KEY === "") {
+                console.warn("API Key is not set. Please replace 'YOUR_GEMINI_API_KEY_HERE' in the script.");
+                alert("Gemini API Key is not configured in the code. Question generation will likely fail. Please contact the administrator or check the console.");
+                showSection(quizSetupSection); // Go back to setup
+                return;
+            }
+
+            const prompt = `Generate ${NUM_QUESTIONS} unique multiple-choice questions suitable for a professional level Civil Service Exam in the Philippines.
+The category is: "${category}".
+The difficulty level is: "${difficulty}".
+For each question:
+1.  Provide a 'question' text.
+2.  Provide an array of 4 distinct string 'options'. One of these options must be the correct answer.
+3.  Clearly indicate the 'answer' by providing the exact string of the correct option.
+
+Format the entire output as a single, valid JSON array of objects. Each object in the array should represent a question and have the keys "question", "options", and "answer".
+
+Example of one object in the array:
+{
+  "question": "What is the capital of the Philippines?",
+  "options": ["Manila", "Quezon City", "Makati", "Pasig"],
+  "answer": "Manila"
+}
+
+Do not include any text or explanation outside of the JSON array itself.`;
+
+            try {
+                const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${GEMINI_API_KEY}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        contents: [{ parts: [{ text: prompt }] }]
+                    }),
+                });
+
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    console.error('Gemini API Error Response:', errorData);
+                    throw new Error(`Gemini API request failed with status ${response.status}: ${errorData.error?.message || 'Unknown error'}. Check browser console for CORS issues if hosted externally.`);
+                }
+
+                const data = await response.json();
+                
+                if (!data.candidates || !data.candidates[0].content || !data.candidates[0].content.parts || !data.candidates[0].content.parts[0].text) {
+                    throw new Error('Unexpected API response structure from Gemini. No text part found.');
+                }
+
+                const rawJsonText = data.candidates[0].content.parts[0].text;
+                // Sometimes the API might wrap the JSON in backticks or 'json' label
+                const cleanedJsonText = rawJsonText.replace(/^```json\s*|```$/g, '').trim();
+
+                currentQuestions = JSON.parse(cleanedJsonText);
+
+                if (!Array.isArray(currentQuestions) || currentQuestions.length === 0) {
+                    throw new Error('Parsed data is not an array or is empty from Gemini API.');
+                }
+                // Validate structure of first question as a sample
+                if (!currentQuestions[0].question || !Array.isArray(currentQuestions[0].options) || !currentQuestions[0].answer) {
+                    console.error("Parsed questions:", currentQuestions);
+                    throw new Error('Question data structure is invalid. Make sure questions have "question", "options" (array), and "answer" fields.');
+                }
+
+
+                userAnswers = new Array(currentQuestions.length).fill(null);
+                displayQuestions(category, difficulty);
+                showSection(questionnaireSection);
+
+            } catch (error) {
+                console.error('Error fetching or parsing questions:', error);
+                alert(`Failed to generate questions. ${error.message}. Please check the browser console for details, especially for CORS errors.`);
+                showSection(quizSetupSection); // Go back to setup
+            }
+        }
+
+
+        // --- Display Questions ---
+        function displayQuestions(category, difficulty) {
+            questionsContainer.innerHTML = ''; // Clear previous questions
+            displayCategory.textContent = category;
+            displayDifficulty.textContent = difficulty;
+
+            currentQuestions.forEach((q, index) => {
+                const questionCard = document.createElement('div');
+                questionCard.classList.add('question-card');
+                questionCard.innerHTML = `
+                    <p class="font-semibold mb-3 text-lg">${index + 1}. ${q.question}</p>
+                    <div class="options-group space-y-2">
+                        ${q.options.map((option, i) => `
+                            <label class="option-label" for="q${index}_option${i}" id="label_q${index}_option${i}">
+                                <input type="radio" name="question${index}" id="q${index}_option${i}" value="${escapeHtml(option)}">
+                                ${escapeHtml(option)}
+                            </label>
+                        `).join('')}
+                    </div>
+                `;
+                questionsContainer.appendChild(questionCard);
+
+                // Add event listeners for option selection styling
+                const radioButtons = questionCard.querySelectorAll(`input[name="question${index}"]`);
+                radioButtons.forEach(radio => {
+                    radio.addEventListener('change', (event) => {
+                        // Remove 'selected-option' from all labels in this group
+                        questionCard.querySelectorAll('.option-label').forEach(lbl => lbl.classList.remove('selected-option'));
+                        // Add 'selected-option' to the chosen one
+                        if (event.target.checked) {
+                            document.getElementById(`label_${event.target.id}`).classList.add('selected-option');
+                        }
+                    });
+                });
+            });
+        }
+
+        function escapeHtml(unsafe) {
+            if (typeof unsafe !== 'string') return unsafe;
+            return unsafe
+                   .replace(/&/g, "&amp;")
+                   .replace(/</g, "&lt;")
+                   .replace(/>/g, "&gt;")
+                   .replace(/"/g, "&quot;")
+                   .replace(/'/g, "&#039;");
+        }
+
+        // --- Submit Answers & Results ---
+        submitAnswersButton.addEventListener('click', () => {
+            // Collect answers
+            currentQuestions.forEach((q, index) => {
+                const selectedOption = document.querySelector(`input[name="question${index}"]:checked`);
+                if (selectedOption) {
+                    userAnswers[index] = selectedOption.value;
+                } else {
+                    userAnswers[index] = null; // Mark as unanswered
+                }
+            });
+            displayResults();
+            showSection(resultsSection);
+        });
+
+        cancelQuizButton.addEventListener('click', () => {
+            if (confirm("Are you sure you want to cancel this quiz? Your progress will be lost.")) {
+                currentQuestions = [];
+                userAnswers = [];
+                showSection(quizSetupSection);
+            }
+        });
+
+
+        function displayResults() {
+            let score = 0;
+            reviewContainer.innerHTML = ''; // Clear previous review
+
+            resultUserNameDisplay.textContent = userName;
+
+            currentQuestions.forEach((q, index) => {
+                const userAnswer = userAnswers[index];
+                const correctAnswer = q.answer;
+                const isCorrect = userAnswer === correctAnswer;
+                if (isCorrect) {
+                    score++;
+                }
+
+                const reviewItem = document.createElement('div');
+                reviewItem.classList.add('p-4', 'rounded-md', 'mb-3');
+                reviewItem.classList.add(isCorrect ? 'correct-answer' : 'incorrect-answer');
+
+                let optionsHtml = q.options.map(opt => {
+                    let optClass = '';
+                    if (opt === correctAnswer) optClass = 'font-bold text-green-700';
+                    if (opt === userAnswer && !isCorrect) optClass = 'font-bold text-red-700 line-through';
+                    return `<li class="${optClass}">${escapeHtml(opt)}</li>`;
+                }).join('');
+
+                reviewItem.innerHTML = `
+                    <p class="font-semibold mb-1">${index + 1}. ${q.question}</p>
+                    <ul class="list-disc list-inside text-sm mb-2">
+                        ${optionsHtml}
+                    </ul>
+                    <p class="text-sm">Your answer: <span class="font-semibold">${userAnswer ? escapeHtml(userAnswer) : 'Not answered'}</span></p>
+                    ${!isCorrect ? `<p class="text-sm">Correct answer: <span class="font-semibold text-green-700">${escapeHtml(correctAnswer)}</span></p>` : ''}
+                `;
+                reviewContainer.appendChild(reviewItem);
+            });
+
+            scoreDisplay.textContent = score;
+            totalQuestionsDisplay.textContent = currentQuestions.length;
+        }
+
+        // --- Email Results Functionality (via Apps Script Web App) ---
+        emailResultsButton.addEventListener('click', async () => {
+            if (APPS_SCRIPT_WEB_APP_URL === "YOUR_DEPLOYED_APPS_SCRIPT_WEB_APP_URL_HERE" || APPS_SCRIPT_WEB_APP_URL === "") {
+                alert("Apps Script Web App URL is not configured. Cannot send email or save results.");
+                return;
+            }
+
+            const score = parseInt(scoreDisplay.textContent);
+            const total = parseInt(totalQuestionsDisplay.textContent);
+            const quizCategory = quizCategorySelect.value;
+            const quizDifficulty = quizDifficultySelect.value;
+
+            // Prepare review details for Apps Script (no explanation needed in the client-side, Apps Script adds it if needed for email)
+            const reviewDetails = currentQuestions.map((q, index) => {
+                const userAnswer = userAnswers[index];
+                const correctAnswer = q.answer;
+                return {
+                    question: q.question,
+                    options: q.options,
+                    userAnswer: userAnswer,
+                    correctAnswer: correctAnswer,
+                    isCorrect: userAnswer === correctAnswer
+                };
+            });
+
+            try {
+                const response = await fetch(APPS_SCRIPT_WEB_APP_URL, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        action: 'sendResults', // Action for Apps Script to identify the request
+                        userName: userName,
+                        userEmail: userEmail,
+                        score: score,
+                        totalQuestions: total,
+                        quizCategory: quizCategory,
+                        quizDifficulty: quizDifficulty,
+                        reviewDetails: reviewDetails
+                    })
+                });
+
+                if (!response.ok) {
+                    const errorResponse = await response.json(); // Assuming Apps Script returns JSON error
+                    throw new Error(errorResponse.message || `HTTP error! status: ${response.status}`);
+                }
+
+                const result = await response.json(); // Assuming Apps Script returns success JSON
+                alert(result.message);
+
+            } catch (error) {
+                console.error("Error sending results to Apps Script Web App:", error);
+                alert("Failed to send email and save results: " + error.message + ". Check browser console and Apps Script logs.");
+            }
+        });
+
+
+        // --- Try Again ---
+        tryAgainButton.addEventListener('click', () => {
+            currentQuestions = [];
+            userAnswers = [];
+            showSection(quizSetupSection); // Go back to setup for a new quiz
+        });
+
+        // --- Initial Setup ---
+        // Show user info section by default
+        showSection(userInfoSection);
+    </script>
+</body>
+</html>
