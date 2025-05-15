@@ -475,7 +475,7 @@ Do not include any text or explanation outside of the JSON array itself.`;
 
         // --- Email Results Functionality (via Apps Script Web App) ---
         emailResultsButton.addEventListener('click', async () => {
-            if (APPS_SCRIPT_WEB_APP_URL === "YOUR_DEPLOYED_APPS_SCRIPT_WEB_APP_URL_HERE" || APPS_SCRIPT_WEB_APP_URL === "") {
+            if (APPS_SCRIPT_WEB_APP_URL === "") {
                 alert("Apps Script Web App URL is not configured. Cannot send email or save results.");
                 return;
             }
