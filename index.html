@@ -93,6 +93,34 @@
             background-color: #fee2e2; /* Red-100 */
             border-left: 4px solid #ef4444; /* Red-500 */
         }
+        /* New style for explanation text */
+        .explanation-text {
+            background-color: #e0f2f7; /* Light cyan */
+            border-left: 4px solid #00bcd4; /* Cyan-500 */
+            padding: 1rem;
+            margin-top: 1rem;
+            border-radius: 4px;
+            font-size: 0.9em;
+            color: #0d47a1; /* Dark blue */
+            display: none; /* Hidden by default */
+        }
+        .explanation-text.show {
+            display: block;
+        }
+        .show-explanation-btn {
+            background-color: #007bff; /* Blue */
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            cursor: pointer;
+            border: none;
+            margin-top: 10px; /* Space from other elements */
+            font-size: 0.85em;
+        }
+        .show-explanation-btn:hover {
+            background-color: #0056b3; /* Darker blue */
+        }
+
         /* Responsive adjustments */
         @media (max-width: 640px) {
             .quiz-container {
@@ -170,7 +198,7 @@
             <h2 class="text-2xl font-semibold mb-2 text-gray-700">Quiz Time!</h2>
             <p class="text-sm text-gray-500 mb-6">Category: <span id="displayCategory" class="font-semibold"></span> | Difficulty: <span id="displayDifficulty" class="font-semibold"></span></p>
             <div id="questionsContainer">
-                </div>
+            </div>
             <div class="mt-8 flex flex-col-reverse sm:flex-row justify-between items-center">
                    <button id="cancelQuizButton" class="btn btn-secondary mt-4 sm:mt-0">Cancel Quiz</button>
                    <button id="submitAnswersButton" class="btn btn-primary">Submit Answers</button>
@@ -184,16 +212,15 @@
                 <p class="text-2xl">Your Score: <span id="score" class="font-bold text-green-600">0</span> / <span id="totalQuestions" class="font-bold">0</span></p>
             </div>
             <div id="reviewContainer" class="space-y-4">
-                </div>
+            </div>
             <div class="mt-8 text-center space-y-2 sm:space-y-0 sm:space-x-2">
-                <button id="emailResultsButton" class="btn btn-primary inline-block">Email My Results</button>
-                <button id="tryAgainButton" class="btn btn-secondary inline-block">Try Another Quiz</button>
+                <button id="tryAgainButton" class="btn btn-primary inline-block">Try Another Quiz</button>
             </div>
         </section>
 
         <footer class="text-center mt-12 text-sm text-gray-500">
-            <p>&copy; 2024 Civil Service Reviewer. For educational purposes only.</p>
-               <p class="mt-1">Question generation powered by Google Gemini.</p>
+            <p>&copy; 2025 Civil Service Reviewer. For educational purposes only.</p>
+               <p class="mt-1">Question generation powered by Reyniel Manungas & Google Gemini.</p>
         </footer>
 
     </div>
@@ -226,7 +253,7 @@
         const totalQuestionsDisplay = document.getElementById('totalQuestions');
         const resultUserNameDisplay = document.getElementById('resultUserName');
         const reviewContainer = document.getElementById('reviewContainer');
-        const emailResultsButton = document.getElementById('emailResultsButton');
+        // Removed emailResultsButton constant
         const tryAgainButton = document.getElementById('tryAgainButton');
 
         // App State
@@ -235,14 +262,12 @@
         // **Expect CORS issues if the Gemini API does not allow direct client-side calls from your domain.**
         const GEMINI_API_KEY = "AIzaSyB3v2tvjTsuT4IjN4yrHAx2kKXpaTDAvow"; // <--- REPLACE THIS WITH YOUR GEMINI API KEY
 
-        // IMPORTANT: Replace this with YOUR DEPLOYED GOOGLE APPS SCRIPT WEB APP URL
-        // Go to your Apps Script project > Deploy > New deployment > Web app.
-        // Set "Execute as: Me" and "Who has access: Anyone". Copy the URL generated.
-        const APPS_SCRIPT_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbwUhnm2RIgjzH7fVuLXkOQIZC8aa7boSaxEuu6QtBMwed6QOLgwXi-25oOeUuHmpuY9AQ/exec"; // <--- REPLACE THIS URL
+        // APPS_SCRIPT_WEB_APP_URL is no longer needed since email functionality is removed
+        // const APPS_SCRIPT_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbwUhnm2RIgjzH7fVuLXkOQIZC8aa7boSaxEuu6QtBMwed6QOLgwXi-25oOeUuHmpuY9AQ/exec";
 
 
         let userName = '';
-        let userEmail = '';
+        let userEmail = ''; // Kept for initial user info form, but not used after
         let currentQuestions = [];
         let userAnswers = [];
         const NUM_QUESTIONS = 10; // Number of questions to generate
@@ -259,11 +284,11 @@
         userInfoForm.addEventListener('submit', (e) => {
             e.preventDefault();
             userName = userNameInput.value.trim();
-            userEmail = userEmailInput.value.trim();
-            if (userName && userEmail) {
+            userEmail = userEmailInput.value.trim(); // Still capture, but not used for email
+            if (userName) { // Email is no longer strictly necessary if not emailing
                 showSection(quizSetupSection);
             } else {
-                alert("Please fill in both your name and email.");
+                alert("Please fill in your name.");
             }
         });
 
@@ -290,7 +315,7 @@
                 return;
             }
 
-          const prompt = `Generate ${NUM_QUESTIONS} unique multiple-choice questions suitable for a professional level Civil Service Exam in the Philippines.
+            const prompt = `Generate ${NUM_QUESTIONS} unique multiple-choice questions suitable for a professional level Civil Service Exam in the Philippines.
 The category is: "${category}".
 The difficulty level is: "${difficulty}".
 For each question:
@@ -344,9 +369,9 @@ Do not include any text or explanation outside of the JSON array itself.`;
                     throw new Error('Parsed data is not an array or is empty from Gemini API.');
                 }
                 // Validate structure of first question as a sample
-                if (!currentQuestions[0].question || !Array.isArray(currentQuestions[0].options) || !currentQuestions[0].answer) {
+                if (!currentQuestions[0].question || !Array.isArray(currentQuestions[0].options) || !currentQuestions[0].answer || !currentQuestions[0].explanation) {
                     console.error("Parsed questions:", currentQuestions);
-                    throw new Error('Question data structure is invalid. Make sure questions have "question", "options" (array), and "answer" fields.');
+                    throw new Error('Question data structure is invalid. Make sure questions have "question", "options" (array), "answer", and "explanation" fields.');
                 }
 
 
@@ -465,71 +490,35 @@ Do not include any text or explanation outside of the JSON array itself.`;
                     </ul>
                     <p class="text-sm">Your answer: <span class="font-semibold">${userAnswer ? escapeHtml(userAnswer) : 'Not answered'}</span></p>
                     ${!isCorrect ? `<p class="text-sm">Correct answer: <span class="font-semibold text-green-700">${escapeHtml(correctAnswer)}</span></p>` : ''}
+                    ${q.explanation ? `
+                        <button class="show-explanation-btn" data-question-index="${index}">Show Explanation</button>
+                        <div class="explanation-text" id="explanation_q${index}">
+                            ${escapeHtml(q.explanation)}
+                        </div>
+                    ` : ''}
                 `;
                 reviewContainer.appendChild(reviewItem);
             });
 
             scoreDisplay.textContent = score;
             totalQuestionsDisplay.textContent = currentQuestions.length;
+
+            // Add event listeners for the new explanation buttons
+            document.querySelectorAll('.show-explanation-btn').forEach(button => {
+                button.addEventListener('click', (event) => {
+                    const index = event.target.dataset.questionIndex;
+                    const explanationDiv = document.getElementById(`explanation_q${index}`);
+                    explanationDiv.classList.toggle('show');
+                    if (explanationDiv.classList.contains('show')) {
+                        event.target.textContent = 'Hide Explanation';
+                    } else {
+                        event.target.textContent = 'Show Explanation';
+                    }
+                });
+            });
         }
 
-        // --- Email Results Functionality (via Apps Script Web App) ---
-        emailResultsButton.addEventListener('click', async () => {
-            if (APPS_SCRIPT_WEB_APP_URL === "") {
-                alert("Apps Script Web App URL is not configured. Cannot send email or save results.");
-                return;
-            }
-
-            const score = parseInt(scoreDisplay.textContent);
-            const total = parseInt(totalQuestionsDisplay.textContent);
-            const quizCategory = quizCategorySelect.value;
-            const quizDifficulty = quizDifficultySelect.value;
-
-            // Prepare review details for Apps Script (no explanation needed in the client-side, Apps Script adds it if needed for email)
-            const reviewDetails = currentQuestions.map((q, index) => {
-                const userAnswer = userAnswers[index];
-                const correctAnswer = q.answer;
-                return {
-                    question: q.question,
-                    options: q.options,
-                    userAnswer: userAnswer,
-                    correctAnswer: correctAnswer,
-                    isCorrect: userAnswer === correctAnswer
-                };
-            });
-
-            try {
-                const response = await fetch(APPS_SCRIPT_WEB_APP_URL, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        action: 'sendResults', // Action for Apps Script to identify the request
-                        userName: userName,
-                        userEmail: userEmail,
-                        score: score,
-                        totalQuestions: total,
-                        quizCategory: quizCategory,
-                        quizDifficulty: quizDifficulty,
-                        reviewDetails: reviewDetails
-                    })
-                });
-
-                if (!response.ok) {
-                    const errorResponse = await response.json(); // Assuming Apps Script returns JSON error
-                    throw new Error(errorResponse.message || `HTTP error! status: ${response.status}`);
-                }
-
-                const result = await response.json(); // Assuming Apps Script returns success JSON
-                alert(result.message);
-
-            } catch (error) {
-                console.error("Error sending results to Apps Script Web App:", error);
-                alert("Failed to send email and save results: " + error.message + ". Check browser console and Apps Script logs.");
-            }
-        });
-
+        // Removed Email Results Functionality event listener
 
         // --- Try Again ---
         tryAgainButton.addEventListener('click', () => {
