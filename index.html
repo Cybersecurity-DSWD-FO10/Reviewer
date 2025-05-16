@@ -1,608 +1,1101 @@
 <!DOCTYPE html>
+
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Civil Service Quiz - Philippines</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <style>
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: #f0f4f8; /* Light blue-gray background */
-            display: flex; /* Enable Flexbox */
-            justify-content: center; /* Center horizontally */
-            align-items: center; /* Center vertically */
-            min-height: 100vh; /* Ensure body takes full viewport height */
-            margin: 0; /* Remove default body margin */
-            padding: 1rem; /* Add some padding for small screens */
-            box-sizing: border-box; /* Include padding in element's total width and height */
-        }
-        .quiz-container {
-            max-width: 800px;
-            width: 100%; /* Ensure it takes full width up to max-width */
-            padding: 2rem;
-            background-color: white;
-            border-radius: 12px;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
-        }
-        .btn {
-            padding: 0.75rem 1.5rem;
-            border-radius: 8px;
-            font-weight: 500;
-            transition: all 0.3s ease;
-            cursor: pointer;
-        }
-        .btn-primary {
-            background-color: #3b82f6; /* Blue-500 */
-            color: white;
-        }
-        .btn-primary:hover {
-            background-color: #2563eb; /* Blue-600 */
-        }
-        .btn-secondary {
-            background-color: #6b7280; /* Gray-500 */
-            color: white;
-        }
-        .btn-secondary:hover {
-            background-color: #4b5563; /* Gray-600 */
-        }
-        .input-field {
-            width: 100%;
-            padding: 0.75rem;
-            border: 1px solid #d1d5db; /* Gray-300 */
-            border-radius: 8px;
-            margin-bottom: 1rem;
-        }
-        .input-field:focus {
-            outline: none;
-            border-color: #3b82f6; /* Blue-500 */
-            box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.3);
-        }
-        .question-card {
-            background-color: #f9fafb; /* Gray-50 */
-            padding: 1.5rem;
-            border-radius: 8px;
-            margin-bottom: 1.5rem;
-            border: 1px solid #e5e7eb; /* Gray-200 */
-        }
-        .option-label {
-            display: block;
-            padding: 0.75rem;
-            border: 1px solid #d1d5db;
-            border-radius: 6px;
-            margin-bottom: 0.5rem;
-            cursor: pointer;
-            transition: all 0.2s ease;
-        }
-        .option-label:hover {
-            background-color: #e5e7eb; /* Gray-200 */
-        }
-        .option-label input[type="radio"] {
-            margin-right: 0.5rem;
-        }
-        .selected-option {
-            background-color: #bfdbfe; /* Blue-200 */
-            border-color: #3b82f6; /* Blue-500 */
-        }
-        .correct-answer {
-            background-color: #d1fae5; /* Green-100 */
-            border-left: 4px solid #10b981; /* Green-500 */
-        }
-        .incorrect-answer {
-            background-color: #fee2e2; /* Red-100 */
-            border-left: 4px solid #ef4444; /* Red-500 */
-        }
-        /* New style for explanation text */
-        .explanation-text {
-            background-color: #e0f2f7; /* Light cyan */
-            border-left: 4px solid #00bcd4; /* Cyan-500 */
-            padding: 1rem;
-            margin-top: 1rem;
-            border-radius: 4px;
-            font-size: 0.9em;
-            color: #0d47a1; /* Dark blue */
-            display: none; /* Hidden by default */
-        }
-        .explanation-text.show {
-            display: block;
-        }
-        .show-explanation-btn {
-            background-color: #007bff; /* Blue */
-            color: white;
-            padding: 0.5rem 1rem;
-            border-radius: 5px;
-            cursor: pointer;
-            border: none;
-            margin-top: 10px; /* Space from other elements */
-            font-size: 0.85em;
-        }
-        .show-explanation-btn:hover {
-            background-color: #0056b3; /* Darker blue */
-        }
 
-        /* Responsive adjustments */
-        @media (max-width: 640px) {
-            .quiz-container {
-                margin: 1rem;
-                padding: 1.5rem;
-            }
-            .btn {
-                width: 100%;
-                margin-bottom: 0.5rem;
-            }
-            .flex-col-reverse.sm\:flex-row {
-                flex-direction: column-reverse;
-            }
-        }
-    </style>
-</head>
-<body class="text-gray-800">
+  <meta charset="UTF-8">
 
-    <div class="quiz-container">
-        <header class="text-center mb-8">
-            <h1 class="text-3xl sm:text-4xl font-bold text-blue-600">Civil Service Exam Reviewer</h1>
-            <p class="text-gray-600 mt-2">Professional Level - Philippines</p>
-        </header>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-        <section id="userInfoSection">
-            <h2 class="text-2xl font-semibold mb-6 text-gray-700">Welcome, Reviewee!</h2>
-            <form id="userInfoForm">
-                <div class="mb-4">
-                    <label for="userName" class="block text-sm font-medium text-gray-700 mb-1">Full Name:</label>
-                    <input type="text" id="userName" name="userName" class="input-field" required>
-                </div>
-                <div class="mb-6">
-                    <label for="userEmail" class="block text-sm font-medium text-gray-700 mb-1">Email Address:</label>
-                    <input type="email" id="userEmail" name="userEmail" class="input-field" required>
-                </div>
-                <button type="submit" class="btn btn-primary w-full">Start Review</button>
-            </form>
-        </section>
+  <title>Civil Service Quiz - Philippines</title>
 
-        <section id="quizSetupSection" class="hidden">
-            <h2 class="text-2xl font-semibold mb-6 text-gray-700">Quiz Configuration</h2>
-            <div class="mb-4">
-                <label for="quizCategory" class="block text-sm font-medium text-gray-700 mb-1">Select Category:</label>
-                <select id="quizCategory" name="quizCategory" class="input-field">
-                    <option value="All Categories">All Categories (20 Questions)</option>
-                    <option value="Verbal">Verbal Reasoning</option>
-                    <option value="Analytical">Analytical Ability</option>
-                    <option value="Numerical">Numerical Ability</option>
-                    <option value="General Information">General Information (Phils. Constitution, Peace & Human Rights, Environment)</option>
-                </select>
-            </div>
-            <div class="mb-6">
-                <label for="quizDifficulty" class="block text-sm font-medium text-gray-700 mb-1">Select Difficulty:</label>
-                <select id="quizDifficulty" name="quizDifficulty" class="input-field">
-                    <option value="Easy">Easy</option>
-                    <option value="Medium">Medium</option>
-                    <option value="Hard">Hard</option>
-                </select>
-            </div>
-            <button id="generateQuestionsButton" class="btn btn-primary w-full">Generate Questions</button>
-            <button id="backToUserInfoButton" class="btn btn-secondary w-full mt-2">Back</button>
-        </section>
+  <script src="https://cdn.tailwindcss.com"></script>
 
-        <section id="loadingSection" class="hidden text-center py-10">
-            <div class="flex justify-center items-center mb-4">
-                <svg class="animate-spin -ml-1 mr-3 h-10 w-10 text-blue-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                </svg>
-            </div>
-            <p class="text-xl font-medium text-gray-700">Generating your questions...</p>
-            <p class="text-gray-500">This might take a moment. Please wait.</p>
-        </section>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 
-        <section id="questionnaireSection" class="hidden">
-            <h2 class="text-2xl font-semibold mb-2 text-gray-700">Quiz Time!</h2>
-            <p class="text-sm text-gray-500 mb-6">Category: <span id="displayCategory" class="font-semibold"></span> | Difficulty: <span id="displayDifficulty" class="font-semibold"></span></p>
-            <div id="questionsContainer">
-            </div>
-            <div class="mt-8 flex flex-col-reverse sm:flex-row justify-between items-center">
-                    <button id="cancelQuizButton" class="btn btn-secondary mt-4 sm:mt-0">Cancel Quiz</button>
-                    <button id="submitAnswersButton" class="btn btn-primary">Submit Answers</button>
-            </div>
-        </section>
+  <style>
 
-        <section id="resultsSection" class="hidden">
-            <h2 class="text-2xl font-semibold mb-4 text-gray-700">Quiz Results</h2>
-            <div class="bg-blue-50 p-6 rounded-lg shadow mb-6">
-                <p class="text-lg">Hello, <span id="resultUserName" class="font-bold text-blue-600"></span>!</p>
-                <p class="text-2xl">Your Score: <span id="score" class="font-bold text-green-600">0</span> / <span id="totalQuestions" class="font-bold">0</span></p>
-            </div>
-            <div id="reviewContainer" class="space-y-4">
-            </div>
-            <div class="mt-8 text-center space-y-2 sm:space-y-0 sm:space-x-2">
-                <button id="tryAgainButton" class="btn btn-primary inline-block">Try Another Quiz</button>
-            </div>
-        </section>
+    body {
 
-        <footer class="text-center mt-12 text-sm text-gray-500">
-            <p>&copy; 2025 Civil Service Reviewer. For educational purposes only.</p>
-                <p class="mt-1">Question generation powered by Reyniel Manungas & Google Gemini.</p>
-        </footer>
+      font-family: 'Inter', sans-serif;
 
-    </div>
+      background-color: #f0f4f8; /* Light blue-gray background */
 
-    <script>
-        // DOM Elements
-        const userInfoSection = document.getElementById('userInfoSection');
-        const quizSetupSection = document.getElementById('quizSetupSection');
-        const questionnaireSection = document.getElementById('questionnaireSection');
-        const loadingSection = document.getElementById('loadingSection');
-        const resultsSection = document.getElementById('resultsSection');
+      display: flex; /* Enable Flexbox */
 
-        const userInfoForm = document.getElementById('userInfoForm');
-        const userNameInput = document.getElementById('userName');
-        const userEmailInput = document.getElementById('userEmail');
+      justify-content: center; /* Center horizontally */
 
-        const quizCategorySelect = document.getElementById('quizCategory');
-        const quizDifficultySelect = document.getElementById('quizDifficulty');
-        const generateQuestionsButton = document.getElementById('generateQuestionsButton');
-        const backToUserInfoButton = document.getElementById('backToUserInfoButton');
+      align-items: center; /* Center vertically */
 
-        const questionsContainer = document.getElementById('questionsContainer');
-        const submitAnswersButton = document.getElementById('submitAnswersButton');
-        const cancelQuizButton = document.getElementById('cancelQuizButton');
+      min-height: 100vh; /* Ensure body takes full viewport height */
 
-        const displayCategory = document.getElementById('displayCategory');
-        const displayDifficulty = document.getElementById('displayDifficulty');
+      margin: 0; /* Remove default body margin */
 
-        const scoreDisplay = document.getElementById('score');
-        const totalQuestionsDisplay = document.getElementById('totalQuestions');
-        const resultUserNameDisplay = document.getElementById('resultUserName');
-        const reviewContainer = document.getElementById('reviewContainer');
-        const tryAgainButton = document.getElementById('tryAgainButton');
+      padding: 1rem; /* Add some padding for small screens */
 
-        // App State
-        const GEMINI_API_KEY = "AIzaSyB3v2tvjTsuT4IjN4yrHAx2kKXpaTDAvow"; // <--- REPLACE THIS WITH YOUR GEMINI API KEY
+      box-sizing: border-box; /* Include padding in element's total width and height */
 
-        let userName = '';
-        let userEmail = '';
-        let currentQuestions = [];
-        let userAnswers = [];
-        const NUM_QUESTIONS_PER_CATEGORY = 5; // Number of questions per category when "All Categories" is selected
-        const TOTAL_QUESTIONS_ALL_CATEGORIES = 20; // Total questions for "All Categories"
-
-        // --- Navigation ---
-        function showSection(section) {
-            [userInfoSection, quizSetupSection, questionnaireSection, loadingSection, resultsSection].forEach(s => s.classList.add('hidden'));
-            section.classList.remove('hidden');
-            window.scrollTo(0, 0); // Scroll to top
-        }
-
-        // --- User Info ---
-        userInfoForm.addEventListener('submit', (e) => {
-            e.preventDefault();
-            userName = userNameInput.value.trim();
-            userEmail = userEmailInput.value.trim();
-            if (userName) {
-                showSection(quizSetupSection);
-            } else {
-                alert("Please fill in your name.");
-            }
-        });
-
-        backToUserInfoButton.addEventListener('click', () => {
-            showSection(userInfoSection);
-        });
-
-        // --- Quiz Setup & Question Generation (Direct Gemini API call from client-side) ---
-        generateQuestionsButton.addEventListener('click', () => {
-            fetchQuestions();
-        });
-
-        async function fetchQuestions() {
-    const category = quizCategorySelect.value;
-    const difficulty = quizDifficultySelect.value;
-
-    showSection(loadingSection);
-
-    if (GEMINI_API_KEY === "AIzaSyB3v2tvjTsuT4IjN4yrHAx2kKXpaTDAvow" || GEMINI_API_KEY === "") { // Make sure this is YOUR key!
-        console.warn("API Key is not set. Please replace 'AIzaSyB3v2tvjTsuT4IjN4yrHAx2kKXpaTDAvow' with your actual Gemini API key.");
-        alert("Gemini API Key is not configured in the code. Question generation will likely fail. Please contact the administrator or check the console.");
-        showSection(quizSetupSection); // Go back to setup
-        return;
     }
 
-    let prompt = '';
-    let questionsToFetchCount = 0; // Use a distinct variable name to avoid confusion with NUM_QUESTIONS_PER_CATEGORY or TOTAL_QUESTIONS_ALL_CATEGORIES
-    const categories = ["Verbal Reasoning", "Analytical Ability", "Numerical Ability", "General Information"];
+    .quiz-container {
 
-    if (category === "All Categories") {
-        questionsToFetchCount = NUM_QUESTIONS_PER_CATEGORY; // Request NUM_QUESTIONS_PER_CATEGORY for each category
-        prompt = `Generate ${NUM_QUESTIONS_PER_CATEGORY} multiple-choice questions for each of the following Civil Service Exam categories: ${categories.join(', ')}. The difficulty level for all questions should be "${difficulty}".
-For each question:
-1. Provide a 'question' text.
-2. Provide an array of 4 distinct string 'options'. One of these options must be the correct answer.
-3. Clearly indicate the 'answer' by providing the exact string of the correct option.
-4. **Provide a concise 'explanation' (1-3 sentences) explaining why the 'answer' is correct, referencing relevant facts, laws, or concepts where applicable.**
-5. Include a 'category' field indicating which of the four categories the question belongs to (e.g., "Verbal Reasoning", "Analytical Ability", etc.).
+      max-width: 800px;
 
-Format the entire output as a single, valid JSON array of objects. Each object in the array should represent a question and have the keys "question", "options", "answer", "explanation", and "category".
+      width: 100%; /* Ensure it takes full width up to max-width */
 
-Example of one object in the array:
-{
-  "question": "What is the capital of the Philippines?",
-  "options": ["Manila", "Quezon City", "Makati", "Pasig"],
-  "answer": "Manila",
-  "explanation": "Manila is the official capital city of the Philippines and is a highly urbanized city in Metro Manila.",
-  "category": "General Information"
-}
+      padding: 2rem;
 
-Do not include any text or explanation outside of the JSON array itself.`;
-    } else {
-        // Request a bit more than needed to ensure we can pick 10 good ones after potential duplicates/errors
-        questionsToFetchCount = 15; // Request 15 questions for a single category to pick 10 from.
-        prompt = `Generate ${questionsToFetchCount} unique multiple-choice questions suitable for a professional level Civil Service Exam in the Philippines.
+      background-color: white;
+
+      border-radius: 12px;
+
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+
+    }
+
+    .btn {
+
+      padding: 0.75rem 1.5rem;
+
+      border-radius: 8px;
+
+      font-weight: 500;
+
+      transition: all 0.3s ease;
+
+      cursor: pointer;
+
+    }
+
+    .btn-primary {
+
+      background-color: #3b82f6; /* Blue-500 */
+
+      color: white;
+
+    }
+
+    .btn-primary:hover {
+
+      background-color: #2563eb; /* Blue-600 */
+
+    }
+
+    .btn-secondary {
+
+      background-color: #6b7280; /* Gray-500 */
+
+      color: white;
+
+    }
+
+    .btn-secondary:hover {
+
+      background-color: #4b5563; /* Gray-600 */
+
+    }
+
+    .input-field {
+
+      width: 100%;
+
+      padding: 0.75rem;
+
+      border: 1px solid #d1d5db; /* Gray-300 */
+
+      border-radius: 8px;
+
+      margin-bottom: 1rem;
+
+    }
+
+    .input-field:focus {
+
+      outline: none;
+
+      border-color: #3b82f6; /* Blue-500 */
+
+      box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.3);
+
+    }
+
+    .question-card {
+
+      background-color: #f9fafb; /* Gray-50 */
+
+      padding: 1.5rem;
+
+      border-radius: 8px;
+
+      margin-bottom: 1.5rem;
+
+      border: 1px solid #e5e7eb; /* Gray-200 */
+
+    }
+
+    .option-label {
+
+      display: block;
+
+      padding: 0.75rem;
+
+      border: 1px solid #d1d5db;
+
+      border-radius: 6px;
+
+      margin-bottom: 0.5rem;
+
+      cursor: pointer;
+
+      transition: all 0.2s ease;
+
+    }
+
+    .option-label:hover {
+
+      background-color: #e5e7eb; /* Gray-200 */
+
+    }
+
+    .option-label input[type="radio"] {
+
+      margin-right: 0.5rem;
+
+    }
+
+    .selected-option {
+
+      background-color: #bfdbfe; /* Blue-200 */
+
+      border-color: #3b82f6; /* Blue-500 */
+
+    }
+
+    .correct-answer {
+
+      background-color: #d1fae5; /* Green-100 */
+
+      border-left: 4px solid #10b981; /* Green-500 */
+
+    }
+
+    .incorrect-answer {
+
+      background-color: #fee2e2; /* Red-100 */
+
+      border-left: 4px solid #ef4444; /* Red-500 */
+
+    }
+
+    /* New style for explanation text */
+
+    .explanation-text {
+
+      background-color: #e0f2f7; /* Light cyan */
+
+      border-left: 4px solid #00bcd4; /* Cyan-500 */
+
+      padding: 1rem;
+
+      margin-top: 1rem;
+
+      border-radius: 4px;
+
+      font-size: 0.9em;
+
+      color: #0d47a1; /* Dark blue */
+
+      display: none; /* Hidden by default */
+
+    }
+
+    .explanation-text.show {
+
+      display: block;
+
+    }
+
+    .show-explanation-btn {
+
+      background-color: #007bff; /* Blue */
+
+      color: white;
+
+      padding: 0.5rem 1rem;
+
+      border-radius: 5px;
+
+      cursor: pointer;
+
+      border: none;
+
+      margin-top: 10px; /* Space from other elements */
+
+      font-size: 0.85em;
+
+    }
+
+    .show-explanation-btn:hover {
+
+      background-color: #0056b3; /* Darker blue */
+
+    }
+
+
+
+    /* Responsive adjustments */
+
+    @media (max-width: 640px) {
+
+      .quiz-container {
+
+        margin: 1rem;
+
+        padding: 1.5rem;
+
+      }
+
+      .btn {
+
+        width: 100%;
+
+        margin-bottom: 0.5rem;
+
+      }
+
+      .flex-col-reverse.sm\:flex-row {
+
+        flex-direction: column-reverse;
+
+      }
+
+    }
+
+  </style>
+
+</head>
+
+<body class="text-gray-800">
+
+
+
+  <div class="quiz-container">
+
+    <header class="text-center mb-8">
+
+      <h1 class="text-3xl sm:text-4xl font-bold text-blue-600">Civil Service Exam Reviewer</h1>
+
+      <p class="text-gray-600 mt-2">Professional Level - Philippines</p>
+
+    </header>
+
+
+
+    <section id="userInfoSection">
+
+      <h2 class="text-2xl font-semibold mb-6 text-gray-700">Welcome, Reviewee!</h2>
+
+      <form id="userInfoForm">
+
+        <div class="mb-4">
+
+          <label for="userName" class="block text-sm font-medium text-gray-700 mb-1">Full Name:</label>
+
+          <input type="text" id="userName" name="userName" class="input-field" required>
+
+        </div>
+
+        <div class="mb-6">
+
+          <label for="userEmail" class="block text-sm font-medium text-gray-700 mb-1">Email Address:</label>
+
+          <input type="email" id="userEmail" name="userEmail" class="input-field" required>
+
+        </div>
+
+        <button type="submit" class="btn btn-primary w-full">Start Review</button>
+
+      </form>
+
+    </section>
+
+
+
+    <section id="quizSetupSection" class="hidden">
+
+      <h2 class="text-2xl font-semibold mb-6 text-gray-700">Quiz Configuration</h2>
+
+      <div class="mb-4">
+
+        <label for="quizCategory" class="block text-sm font-medium text-gray-700 mb-1">Select Category:</label>
+
+        <select id="quizCategory" name="quizCategory" class="input-field">
+
+          <option value="Verbal">Verbal Reasoning</option>
+
+          <option value="Analytical">Analytical Ability</option>
+
+          <option value="Numerical">Numerical Ability</option>
+
+          <option value="General Information">General Information (Phils. Constitution, Peace & Human Rights, Environment)</option>
+
+        </select>
+
+      </div>
+
+      <div class="mb-6">
+
+        <label for="quizDifficulty" class="block text-sm font-medium text-gray-700 mb-1">Select Difficulty:</label>
+
+        <select id="quizDifficulty" name="quizDifficulty" class="input-field">
+
+          <option value="Easy">Easy</option>
+
+          <option value="Medium">Medium</option>
+
+          <option value="Hard">Hard</option>
+
+        </select>
+
+      </div>
+
+      <button id="generateQuestionsButton" class="btn btn-primary w-full">Generate Questions</button>
+
+      <button id="backToUserInfoButton" class="btn btn-secondary w-full mt-2">Back</button>
+
+    </section>
+
+
+
+    <section id="loadingSection" class="hidden text-center py-10">
+
+      <div class="flex justify-center items-center mb-4">
+
+        <svg class="animate-spin -ml-1 mr-3 h-10 w-10 text-blue-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+
+          <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+
+          <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+
+        </svg>
+
+      </div>
+
+      <p class="text-xl font-medium text-gray-700">Generating your questions...</p>
+
+      <p class="text-gray-500">This might take a moment. Please wait.</p>
+
+    </section>
+
+
+
+    <section id="questionnaireSection" class="hidden">
+
+      <h2 class="text-2xl font-semibold mb-2 text-gray-700">Quiz Time!</h2>
+
+      <p class="text-sm text-gray-500 mb-6">Category: <span id="displayCategory" class="font-semibold"></span> | Difficulty: <span id="displayDifficulty" class="font-semibold"></span></p>
+
+      <div id="questionsContainer">
+
+      </div>
+
+      <div class="mt-8 flex flex-col-reverse sm:flex-row justify-between items-center">
+
+         <button id="cancelQuizButton" class="btn btn-secondary mt-4 sm:mt-0">Cancel Quiz</button>
+
+         <button id="submitAnswersButton" class="btn btn-primary">Submit Answers</button>
+
+      </div>
+
+    </section>
+
+
+
+    <section id="resultsSection" class="hidden">
+
+      <h2 class="text-2xl font-semibold mb-4 text-gray-700">Quiz Results</h2>
+
+      <div class="bg-blue-50 p-6 rounded-lg shadow mb-6">
+
+        <p class="text-lg">Hello, <span id="resultUserName" class="font-bold text-blue-600"></span>!</p>
+
+        <p class="text-2xl">Your Score: <span id="score" class="font-bold text-green-600">0</span> / <span id="totalQuestions" class="font-bold">0</span></p>
+
+      </div>
+
+      <div id="reviewContainer" class="space-y-4">
+
+      </div>
+
+      <div class="mt-8 text-center space-y-2 sm:space-y-0 sm:space-x-2">
+
+        <button id="tryAgainButton" class="btn btn-primary inline-block">Try Another Quiz</button>
+
+      </div>
+
+    </section>
+
+
+
+    <footer class="text-center mt-12 text-sm text-gray-500">
+
+      <p>&copy; 2025 Civil Service Reviewer. For educational purposes only.</p>
+
+       <p class="mt-1">Question generation powered by Reyniel Manungas & Google Gemini.</p>
+
+    </footer>
+
+
+
+  </div>
+
+
+
+  <script>
+
+    // DOM Elements
+
+    const userInfoSection = document.getElementById('userInfoSection');
+
+    const quizSetupSection = document.getElementById('quizSetupSection');
+
+    const questionnaireSection = document.getElementById('questionnaireSection');
+
+    const loadingSection = document.getElementById('loadingSection');
+
+    const resultsSection = document.getElementById('resultsSection');
+
+
+
+    const userInfoForm = document.getElementById('userInfoForm');
+
+    const userNameInput = document.getElementById('userName');
+
+    const userEmailInput = document.getElementById('userEmail');
+
+
+
+    const quizCategorySelect = document.getElementById('quizCategory');
+
+    const quizDifficultySelect = document.getElementById('quizDifficulty');
+
+    const generateQuestionsButton = document.getElementById('generateQuestionsButton');
+
+    const backToUserInfoButton = document.getElementById('backToUserInfoButton');
+
+
+
+    const questionsContainer = document.getElementById('questionsContainer');
+
+    const submitAnswersButton = document.getElementById('submitAnswersButton');
+
+    const cancelQuizButton = document.getElementById('cancelQuizButton');
+
+
+
+    const displayCategory = document.getElementById('displayCategory');
+
+    const displayDifficulty = document.getElementById('displayDifficulty');
+
+
+
+    const scoreDisplay = document.getElementById('score');
+
+    const totalQuestionsDisplay = document.getElementById('totalQuestions');
+
+    const resultUserNameDisplay = document.getElementById('resultUserName');
+
+    const reviewContainer = document.getElementById('reviewContainer');
+
+    // Removed emailResultsButton constant
+
+    const tryAgainButton = document.getElementById('tryAgainButton');
+
+
+
+    // App State
+
+    // IMPORTANT: Gemini API Key is now on the client-side.
+
+    // **This will be publicly visible if hosted on GitHub Pages.**
+
+    // **Expect CORS issues if the Gemini API does not allow direct client-side calls from your domain.**
+
+    const GEMINI_API_KEY = "AIzaSyB3v2tvjTsuT4IjN4yrHAx2kKXpaTDAvow"; // <--- REPLACE THIS WITH YOUR GEMINI API KEY
+
+
+
+    // APPS_SCRIPT_WEB_APP_URL is no longer needed since email functionality is removed
+
+    // const APPS_SCRIPT_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbwUhnm2RIgjzH7fVuLXkOQIZC8aa7boSaxEuu6QtBMwed6QOLgwXi-25oOeUuHmpuY9AQ/exec";
+
+
+
+
+
+    let userName = '';
+
+    let userEmail = ''; // Kept for initial user info form, but not used after
+
+    let currentQuestions = [];
+
+    let userAnswers = [];
+
+    const NUM_QUESTIONS = 10; // Number of questions to generate
+
+
+
+
+
+    // --- Navigation ---
+
+    function showSection(section) {
+
+      [userInfoSection, quizSetupSection, questionnaireSection, loadingSection, resultsSection].forEach(s => s.classList.add('hidden'));
+
+      section.classList.remove('hidden');
+
+      window.scrollTo(0, 0); // Scroll to top
+
+    }
+
+
+
+    // --- User Info ---
+
+    userInfoForm.addEventListener('submit', (e) => {
+
+      e.preventDefault();
+
+      userName = userNameInput.value.trim();
+
+      userEmail = userEmailInput.value.trim(); // Still capture, but not used for email
+
+      if (userName) { // Email is no longer strictly necessary if not emailing
+
+        showSection(quizSetupSection);
+
+      } else {
+
+        alert("Please fill in your name.");
+
+      }
+
+    });
+
+
+
+    backToUserInfoButton.addEventListener('click', () => {
+
+      showSection(userInfoSection);
+
+    });
+
+
+
+
+
+    // --- Quiz Setup & Question Generation (Direct Gemini API call from client-side) ---
+
+    generateQuestionsButton.addEventListener('click', () => {
+
+      fetchQuestions();
+
+    });
+
+
+
+    // ... (your existing code)
+
+
+
+async function fetchQuestions() {
+
+  const category = quizCategorySelect.value;
+
+  const difficulty = quizDifficultySelect.value;
+
+
+
+  showSection(loadingSection);
+
+
+
+  if (GEMINI_API_KEY === "YOUR_GEMINI_API_KEY_HERE" || GEMINI_API_KEY === "") {
+
+    console.warn("API Key is not set. Please replace 'YOUR_GEMINI_API_KEY_HERE' in the script.");
+
+    alert("Gemini API Key is not configured in the code. Question generation will likely fail. Please contact the administrator or check the console.");
+
+    showSection(quizSetupSection); // Go back to setup
+
+    return;
+
+  }
+
+
+
+  const prompt = `Generate ${NUM_QUESTIONS} unique multiple-choice questions suitable for a professional level Civil Service Exam in the Philippines.
+
 The category is: "${category}".
+
 The difficulty level is: "${difficulty}".
+
 For each question:
+
 1. Provide a 'question' text.
+
 2. Provide an array of 4 distinct string 'options'. One of these options must be the correct answer.
+
 3. Clearly indicate the 'answer' by providing the exact string of the correct option.
+
 4. **Provide a concise 'explanation' (1-3 sentences) explaining why the 'answer' is correct, referencing relevant facts, laws, or concepts where applicable.**
+
+
 
 Format the entire output as a single, valid JSON array of objects. Each object in the array should represent a question and have the keys "question", "options", "answer", and "explanation".
 
+
+
 Example of one object in the array:
+
 {
-  "question": "What is the capital of the Philippines?",
-  "options": ["Manila", "Quezon City", "Makati", "Pasig"],
-  "answer": "Manila",
-  "explanation": "Manila is the official capital city of the Philippines and is a highly urbanized city in Metro Manila."
+
+ "question": "What is the capital of the Philippines?",
+
+ "options": ["Manila", "Quezon City", "Makati", "Pasig"],
+
+ "answer": "Manila",
+
+ "explanation": "Manila is the official capital city of the Philippines and is a highly urbanized city in Metro Manila."
+
 }
+
+
 
 Do not include any text or explanation outside of the JSON array itself.`;
+
+
+
+  try {
+
+    const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${GEMINI_API_KEY}`, {
+
+      method: 'POST',
+
+      headers: {
+
+        'Content-Type': 'application/json',
+
+      },
+
+      body: JSON.stringify({
+
+        contents: [{ parts: [{ text: prompt }] }]
+
+      }),
+
+    });
+
+
+
+    if (!response.ok) {
+
+      const errorData = await response.json();
+
+      console.error('Gemini API Error Response:', errorData);
+
+      throw new Error(`Gemini API request failed with status ${response.status}: ${errorData.error?.message || 'Unknown error'}. Check browser console for CORS issues if hosted externally.`);
+
     }
 
-    try {
-        const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${GEMINI_API_KEY}`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                contents: [{ parts: [{ text: prompt }] }]
-            }),
-        });
 
-        if (!response.ok) {
-            const errorData = await response.json();
-            console.error('Gemini API Error Response:', errorData);
-            throw new Error(`Gemini API request failed with status ${response.status}: ${errorData.error?.message || 'Unknown error'}. Check browser console for CORS issues if hosted externally.`);
-        }
 
-        const data = await response.json();
-        
-        if (!data.candidates || !data.candidates[0].content || !data.candidates[0].content.parts || !data.candidates[0].content.parts[0].text) {
-            throw new Error('Unexpected API response structure from Gemini. No text part found.');
-        }
+    const data = await response.json();
 
-        const rawJsonText = data.candidates[0].content.parts[0].text;
-        
-        // --- START: More robust JSON extraction using regex ---
-        const jsonMatch = rawJsonText.match(/\[\s*\{[\s\S]*\}\s*\]/); // Find content starting with '[' and ending with ']'
-        let cleanedJsonText;
+   
 
-        if (jsonMatch && jsonMatch[0]) {
-            cleanedJsonText = jsonMatch[0];
-            // Additional cleaning for common issues like trailing commas in the last object or line breaks
-            cleanedJsonText = cleanedJsonText.replace(/,\s*([\]}])/g, '$1'); // Remove trailing commas before ']' or '}'
-        } else {
-            // Fallback to previous cleaning if regex fails (less likely to happen but good to have)
-            cleanedJsonText = rawJsonText.replace(/^```json\s*|```$/g, '').trim();
-            cleanedJsonText = cleanedJsonText.replace(/,\s*([\]}])/g, '$1'); // Apply trailing comma fix
-        }
-        // --- END: More robust JSON extraction ---
+    if (!data.candidates || !data.candidates[0].content || !data.candidates[0].content.parts || !data.candidates[0].content.parts[0].text) {
 
-        let generatedQuestions = JSON.parse(cleanedJsonText);
+      throw new Error('Unexpected API response structure from Gemini. No text part found.');
 
-        if (!Array.isArray(generatedQuestions) || generatedQuestions.length === 0) {
-            throw new Error('Parsed data is not an array or is empty from Gemini API.');
-        }
-
-        // Filter and select questions based on category
-        if (category === "All Categories") {
-            currentQuestions = [];
-            const shuffledCategories = shuffleArray([...categories]); // Shuffle categories to randomize order
-            
-            shuffledCategories.forEach(cat => {
-                const questionsInCategory = generatedQuestions.filter(q => q.category === cat);
-                // Take NUM_QUESTIONS_PER_CATEGORY questions from each category, or fewer if not enough
-                const selectedQuestions = shuffleArray(questionsInCategory).slice(0, NUM_QUESTIONS_PER_CATEGORY);
-                currentQuestions.push(...selectedQuestions);
-            });
-
-            // If for some reason we still don't have enough questions (e.g., Gemini didn't return 5 per category),
-            // try to fill up from remaining general questions. This is a fallback.
-            if (currentQuestions.length < TOTAL_QUESTIONS_ALL_CATEGORIES) {
-                const remainingNeeded = TOTAL_QUESTIONS_ALL_CATEGORIES - currentQuestions.length;
-                // Create a set of stringified questions already added to avoid duplicates
-                const currentQuestionStrings = new Set(currentQuestions.map(q => JSON.stringify({ question: q.question, answer: q.answer }))); 
-                
-                const additionalQuestions = generatedQuestions.filter(q => 
-                    !currentQuestionStrings.has(JSON.stringify({ question: q.question, answer: q.answer }))
-                );
-                currentQuestions.push(...shuffleArray(additionalQuestions).slice(0, remainingNeeded));
-            }
-            // Ensure total questions are exactly 20 (or capped at the number generated if less than 20)
-            currentQuestions = currentQuestions.slice(0, TOTAL_QUESTIONS_ALL_CATEGORIES);
-
-        } else {
-            // For single category, take the first 10 questions after shuffling
-            currentQuestions = shuffleArray(generatedQuestions).slice(0, 10);
-        }
-
-        // Validate structure of first question as a sample
-        if (currentQuestions.length > 0 && (!currentQuestions[0].question || !Array.isArray(currentQuestions[0].options) || !currentQuestions[0].answer || !currentQuestions[0].explanation)) {
-            console.error("Parsed questions (first item):", currentQuestions[0]);
-            throw new Error('Question data structure is invalid. Make sure questions have "question", "options" (array), "answer", and "explanation" fields.');
-        }
-
-        userAnswers = new Array(currentQuestions.length).fill(null);
-        displayQuestions(category, difficulty);
-        showSection(questionnaireSection);
-
-    } catch (error) {
-        console.error('Error fetching or parsing questions:', error);
-        alert(`Failed to generate questions. ${error.message}. This is often due to malformed JSON from the AI. Please try again or refresh.`);
-        showSection(quizSetupSection); // Go back to setup
     }
+
+
+
+    const rawJsonText = data.candidates[0].content.parts[0].text;
+
+   
+
+    // --- START: More robust JSON extraction ---
+
+    let cleanedJsonText = rawJsonText;
+
+   
+
+    // Attempt to find the first '[' and last ']' to isolate the JSON array
+
+    const firstBracket = cleanedJsonText.indexOf('[');
+
+    const lastBracket = cleanedJsonText.lastIndexOf(']');
+
+
+
+    if (firstBracket !== -1 && lastBracket !== -1 && lastBracket > firstBracket) {
+
+      cleanedJsonText = cleanedJsonText.substring(firstBracket, lastBracket + 1);
+
+    } else {
+
+      // Fallback: if brackets not found or invalid range, try stripping common code block wrappers
+
+      cleanedJsonText = cleanedJsonText.replace(/^```json\s*|```$/g, '').trim();
+
+    }
+
+    // --- END: More robust JSON extraction ---
+
+
+
+    currentQuestions = JSON.parse(cleanedJsonText);
+
+
+
+    if (!Array.isArray(currentQuestions) || currentQuestions.length === 0) {
+
+      throw new Error('Parsed data is not an array or is empty from Gemini API.');
+
+    }
+
+    // Validate structure of first question as a sample
+
+    if (!currentQuestions[0].question || !Array.isArray(currentQuestions[0].options) || !currentQuestions[0].answer || !currentQuestions[0].explanation) {
+
+      console.error("Parsed questions:", currentQuestions);
+
+      throw new Error('Question data structure is invalid. Make sure questions have "question", "options" (array), "answer", and "explanation" fields.');
+
+    }
+
+
+
+
+
+    userAnswers = new Array(currentQuestions.length).fill(null);
+
+    displayQuestions(category, difficulty);
+
+    showSection(questionnaireSection);
+
+
+
+  } catch (error) {
+
+    console.error('Error fetching or parsing questions:', error);
+
+    alert(`Failed to generate questions. ${error.message}. Please check the browser console for details, especially for CORS errors.`);
+
+    showSection(quizSetupSection); // Go back to setup
+
+  }
+
 }
 
-        // Fisher-Yates (Knuth) shuffle algorithm
-        function shuffleArray(array) {
-            for (let i = array.length - 1; i > 0; i--) {
-                const j = Math.floor(Math.random() * (i + 1));
-                [array[i], array[j]] = [array[j], array[i]];
+
+
+
+
+
+
+    // --- Display Questions ---
+
+    function displayQuestions(category, difficulty) {
+
+      questionsContainer.innerHTML = ''; // Clear previous questions
+
+      displayCategory.textContent = category;
+
+      displayDifficulty.textContent = difficulty;
+
+
+
+      currentQuestions.forEach((q, index) => {
+
+        const questionCard = document.createElement('div');
+
+        questionCard.classList.add('question-card');
+
+        questionCard.innerHTML = `
+
+          <p class="font-semibold mb-3 text-lg">${index + 1}. ${q.question}</p>
+
+          <div class="options-group space-y-2">
+
+            ${q.options.map((option, i) => `
+
+              <label class="option-label" for="q${index}_option${i}" id="label_q${index}_option${i}">
+
+                <input type="radio" name="question${index}" id="q${index}_option${i}" value="${escapeHtml(option)}">
+
+                ${escapeHtml(option)}
+
+              </label>
+
+            `).join('')}
+
+          </div>
+
+        `;
+
+        questionsContainer.appendChild(questionCard);
+
+
+
+        // Add event listeners for option selection styling
+
+        const radioButtons = questionCard.querySelectorAll(`input[name="question${index}"]`);
+
+        radioButtons.forEach(radio => {
+
+          radio.addEventListener('change', (event) => {
+
+            // Remove 'selected-option' from all labels in this group
+
+            questionCard.querySelectorAll('.option-label').forEach(lbl => lbl.classList.remove('selected-option'));
+
+            // Add 'selected-option' to the chosen one
+
+            if (event.target.checked) {
+
+              document.getElementById(`label_${event.target.id}`).classList.add('selected-option');
+
             }
-            return array;
-        }
 
-        // --- Display Questions ---
-        function displayQuestions(category, difficulty) {
-            questionsContainer.innerHTML = ''; // Clear previous questions
-            displayCategory.textContent = category;
-            displayDifficulty.textContent = difficulty;
+          });
 
-            currentQuestions.forEach((q, index) => {
-                const questionCard = document.createElement('div');
-                questionCard.classList.add('question-card');
-                questionCard.innerHTML = `
-                    <p class="font-semibold mb-3 text-lg">${index + 1}. ${q.question}</p>
-                    <div class="options-group space-y-2">
-                        ${q.options.map((option, i) => `
-                            <label class="option-label" for="q${index}_option${i}" id="label_q${index}_option${i}">
-                                <input type="radio" name="question${index}" id="q${index}_option${i}" value="${escapeHtml(option)}">
-                                ${escapeHtml(option)}
-                            </label>
-                        `).join('')}
-                    </div>
-                `;
-                questionsContainer.appendChild(questionCard);
-
-                // Add event listeners for option selection styling
-                const radioButtons = questionCard.querySelectorAll(`input[name="question${index}"]`);
-                radioButtons.forEach(radio => {
-                    radio.addEventListener('change', (event) => {
-                        // Remove 'selected-option' from all labels in this group
-                        questionCard.querySelectorAll('.option-label').forEach(lbl => lbl.classList.remove('selected-option'));
-                        // Add 'selected-option' to the chosen one
-                        if (event.target.checked) {
-                            document.getElementById(`label_${event.target.id}`).classList.add('selected-option');
-                        }
-                    });
-                });
-            });
-        }
-
-        function escapeHtml(unsafe) {
-            if (typeof unsafe !== 'string') return unsafe;
-            return unsafe
-                    .replace(/&/g, "&amp;")
-                    .replace(/</g, "&lt;")
-                    .replace(/>/g, "&gt;")
-                    .replace(/"/g, "&quot;")
-                    .replace(/'/g, "&#039;");
-        }
-
-        // --- Submit Answers & Results ---
-        submitAnswersButton.addEventListener('click', () => {
-            // Collect answers
-            currentQuestions.forEach((q, index) => {
-                const selectedOption = document.querySelector(`input[name="question${index}"]:checked`);
-                if (selectedOption) {
-                    userAnswers[index] = selectedOption.value;
-                } else {
-                    userAnswers[index] = null; // Mark as unanswered
-                }
-            });
-            displayResults();
-            showSection(resultsSection);
         });
 
-        cancelQuizButton.addEventListener('click', () => {
-            if (confirm("Are you sure you want to cancel this quiz? Your progress will be lost.")) {
-                currentQuestions = [];
-                userAnswers = [];
-                showSection(quizSetupSection);
-            }
-        });
+      });
+
+    }
 
 
-        function displayResults() {
-            let score = 0;
-            reviewContainer.innerHTML = ''; // Clear previous review
 
-            resultUserNameDisplay.textContent = userName;
+    function escapeHtml(unsafe) {
 
-            currentQuestions.forEach((q, index) => {
-                const userAnswer = userAnswers[index];
-                const correctAnswer = q.answer;
-                const isCorrect = userAnswer === correctAnswer;
-                if (isCorrect) {
-                    score++;
-                }
+      if (typeof unsafe !== 'string') return unsafe;
 
-                const reviewItem = document.createElement('div');
-                reviewItem.classList.add('p-4', 'rounded-md', 'mb-3');
-                reviewItem.classList.add(isCorrect ? 'correct-answer' : 'incorrect-answer');
+      return unsafe
 
-                let optionsHtml = q.options.map(opt => {
-                    let optClass = '';
-                    if (opt === correctAnswer) optClass = 'font-bold text-green-700';
-                    if (opt === userAnswer && !isCorrect) optClass = 'font-bold text-red-700 line-through';
-                    return `<li class="${optClass}">${escapeHtml(opt)}</li>`;
-                }).join('');
+         .replace(/&/g, "&amp;")
 
-                reviewItem.innerHTML = `
-                    <p class="font-semibold mb-1">${index + 1}. ${q.question}</p>
-                    <ul class="list-disc list-inside text-sm mb-2">
-                        ${optionsHtml}
-                    </ul>
-                    <p class="text-sm">Your answer: <span class="font-semibold">${userAnswer ? escapeHtml(userAnswer) : 'Not answered'}</span></p>
-                    ${!isCorrect ? `<p class="text-sm">Correct answer: <span class="font-semibold text-green-700">${escapeHtml(correctAnswer)}</span></p>` : ''}
-                    ${q.explanation ? `
-                        <button class="show-explanation-btn" data-question-index="${index}">Show Explanation</button>
-                        <div class="explanation-text" id="explanation_q${index}">
-                            ${escapeHtml(q.explanation)}
-                        </div>
-                    ` : ''}
-                `;
-                reviewContainer.appendChild(reviewItem);
-            });
+         .replace(/</g, "&lt;")
 
-            scoreDisplay.textContent = score;
-            totalQuestionsDisplay.textContent = currentQuestions.length;
+         .replace(/>/g, "&gt;")
 
-            // Add event listeners for the new explanation buttons
-            document.querySelectorAll('.show-explanation-btn').forEach(button => {
-                button.addEventListener('click', (event) => {
-                    const index = event.target.dataset.questionIndex;
-                    const explanationDiv = document.getElementById(`explanation_q${index}`);
-                    explanationDiv.classList.toggle('show');
-                    if (explanationDiv.classList.contains('show')) {
-                        event.target.textContent = 'Hide Explanation';
-                    } else {
-                        event.target.textContent = 'Show Explanation';
-                    }
-                });
-            });
+         .replace(/"/g, "&quot;")
+
+         .replace(/'/g, "&#039;");
+
+    }
+
+
+
+    // --- Submit Answers & Results ---
+
+    submitAnswersButton.addEventListener('click', () => {
+
+      // Collect answers
+
+      currentQuestions.forEach((q, index) => {
+
+        const selectedOption = document.querySelector(`input[name="question${index}"]:checked`);
+
+        if (selectedOption) {
+
+          userAnswers[index] = selectedOption.value;
+
+        } else {
+
+          userAnswers[index] = null; // Mark as unanswered
+
         }
 
-        // --- Try Again ---
-        tryAgainButton.addEventListener('click', () => {
-            currentQuestions = [];
-            userAnswers = [];
-            showSection(quizSetupSection); // Go back to setup for a new quiz
+      });
+
+      displayResults();
+
+      showSection(resultsSection);
+
+    });
+
+
+
+    cancelQuizButton.addEventListener('click', () => {
+
+      if (confirm("Are you sure you want to cancel this quiz? Your progress will be lost.")) {
+
+        currentQuestions = [];
+
+        userAnswers = [];
+
+        showSection(quizSetupSection);
+
+      }
+
+    });
+
+
+
+
+
+    function displayResults() {
+
+      let score = 0;
+
+      reviewContainer.innerHTML = ''; // Clear previous review
+
+
+
+      resultUserNameDisplay.textContent = userName;
+
+
+
+      currentQuestions.forEach((q, index) => {
+
+        const userAnswer = userAnswers[index];
+
+        const correctAnswer = q.answer;
+
+        const isCorrect = userAnswer === correctAnswer;
+
+        if (isCorrect) {
+
+          score++;
+
+        }
+
+
+
+        const reviewItem = document.createElement('div');
+
+        reviewItem.classList.add('p-4', 'rounded-md', 'mb-3');
+
+        reviewItem.classList.add(isCorrect ? 'correct-answer' : 'incorrect-answer');
+
+
+
+        let optionsHtml = q.options.map(opt => {
+
+          let optClass = '';
+
+          if (opt === correctAnswer) optClass = 'font-bold text-green-700';
+
+          if (opt === userAnswer && !isCorrect) optClass = 'font-bold text-red-700 line-through';
+
+          return `<li class="${optClass}">${escapeHtml(opt)}</li>`;
+
+        }).join('');
+
+
+
+        reviewItem.innerHTML = `
+
+          <p class="font-semibold mb-1">${index + 1}. ${q.question}</p>
+
+          <ul class="list-disc list-inside text-sm mb-2">
+
+            ${optionsHtml}
+
+          </ul>
+
+          <p class="text-sm">Your answer: <span class="font-semibold">${userAnswer ? escapeHtml(userAnswer) : 'Not answered'}</span></p>
+
+          ${!isCorrect ? `<p class="text-sm">Correct answer: <span class="font-semibold text-green-700">${escapeHtml(correctAnswer)}</span></p>` : ''}
+
+          ${q.explanation ? `
+
+            <button class="show-explanation-btn" data-question-index="${index}">Show Explanation</button>
+
+            <div class="explanation-text" id="explanation_q${index}">
+
+              ${escapeHtml(q.explanation)}
+
+            </div>
+
+          ` : ''}
+
+        `;
+
+        reviewContainer.appendChild(reviewItem);
+
+      });
+
+
+
+      scoreDisplay.textContent = score;
+
+      totalQuestionsDisplay.textContent = currentQuestions.length;
+
+
+
+      // Add event listeners for the new explanation buttons
+
+      document.querySelectorAll('.show-explanation-btn').forEach(button => {
+
+        button.addEventListener('click', (event) => {
+
+          const index = event.target.dataset.questionIndex;
+
+          const explanationDiv = document.getElementById(`explanation_q${index}`);
+
+          explanationDiv.classList.toggle('show');
+
+          if (explanationDiv.classList.contains('show')) {
+
+            event.target.textContent = 'Hide Explanation';
+
+          } else {
+
+            event.target.textContent = 'Show Explanation';
+
+          }
+
         });
 
-        // --- Initial Setup ---
-        // Show user info section by default
-        showSection(userInfoSection);
-    </script>
+      });
+
+    }
+
+
+
+    // Removed Email Results Functionality event listener
+
+
+
+    // --- Try Again ---
+
+    tryAgainButton.addEventListener('click', () => {
+
+      currentQuestions = [];
+
+      userAnswers = [];
+
+      showSection(quizSetupSection); // Go back to setup for a new quiz
+
+    });
+
+
+
+    // --- Initial Setup ---
+
+    // Show user info section by default
+
+    showSection(userInfoSection);
+
+  </script>
+
 </body>
+
 </html>
